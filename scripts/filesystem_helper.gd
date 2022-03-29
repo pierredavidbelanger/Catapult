@@ -23,7 +23,7 @@ func _get_last_extract_result() -> int:
 	return last_extract_result
 
 
-func list_dir(path: String, recursive := false) -> Array:
+func list_dir(path: String, recursive := false, absolute_paths := false) -> Array:
 	# Lists the files and subdirectories within a directory.
 	
 	var d = Directory.new()
@@ -46,6 +46,10 @@ func list_dir(path: String, recursive := false) -> Array:
 					result.append(name.plus_file(child))
 		else:
 			break
+	
+	if absolute_paths:
+		for i in result.size():
+			result[i] = path.plus_file(result[i])
 	
 	return result
 

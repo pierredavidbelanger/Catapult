@@ -47,3 +47,21 @@ func save_to_json_file(data, file: String) -> bool:
 	f.close()
 	
 	return true
+
+
+func filter_strings(filter_str: String, strings: Array, case_sensitive := false) -> Array:
+	# Filters an array of strings and returns only the strings that match
+	# the filter. Non-string array elements are ignored.
+	
+	var result := []
+	
+	for i in strings.size():
+		var s = strings[i]
+		if typeof(s) == TYPE_STRING:
+			if not case_sensitive:
+				filter_str = filter_str.to_lower()
+				s = s.to_lower()
+			if filter_str in s:
+				result.push_back(strings[i])
+	
+	return result

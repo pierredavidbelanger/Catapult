@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://icons/info.svg" type="Texture" id=1]
 [ext_resource path="res://icons/download.svg" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://icons/lang/lang_fr.png" type="Texture" id=7]
 [ext_resource path="res://scripts/SettingsUI.gd" type="Script" id=8]
 [ext_resource path="res://scripts/ReleaseInstaller.gd" type="Script" id=9]
+[ext_resource path="res://scenes/CatapediaUI.gd" type="Script" id=10]
 [ext_resource path="res://scripts/ModManager.gd" type="Script" id=12]
 [ext_resource path="res://scripts/SoundpackManager.gd" type="Script" id=13]
 [ext_resource path="res://scripts/Debug.gd" type="Script" id=14]
@@ -120,11 +121,12 @@ margin_bottom = 100.0
 [node name="Tabs" type="TabContainer" parent="Main" groups=["disable_during_backup_operations", "disable_during_mod_operations", "disable_during_soundpack_operations", "disable_while_fetching_releases", "disable_while_installing_game"]]
 margin_top = 104.0
 margin_right = 592.0
-margin_bottom = 373.0
+margin_bottom = 601.0
 tab_align = 0
 script = ExtResource( 16 )
 
 [node name="Game" type="VBoxContainer" parent="Main/Tabs"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 7.5
@@ -1129,6 +1131,107 @@ value = 100.0
 editable = false
 suffix = "%"
 
+[node name="Catapedia" type="VBoxContainer" parent="Main/Tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+script = ExtResource( 10 )
+
+[node name="HBox" type="HBoxContainer" parent="Main/Tabs/Catapedia"]
+margin_right = 577.0
+margin_bottom = 456.0
+
+[node name="Items" type="VBoxContainer" parent="Main/Tabs/Catapedia/HBox"]
+margin_right = 200.0
+margin_bottom = 456.0
+
+[node name="ItemList" type="ItemList" parent="Main/Tabs/Catapedia/HBox/Items"]
+margin_right = 200.0
+margin_bottom = 400.0
+rect_min_size = Vector2( 200, 400 )
+
+[node name="Filter" type="VBoxContainer" parent="Main/Tabs/Catapedia/HBox/Items"]
+margin_top = 404.0
+margin_right = 200.0
+margin_bottom = 456.0
+
+[node name="Label" type="Label" parent="Main/Tabs/Catapedia/HBox/Items/Filter"]
+margin_right = 200.0
+margin_bottom = 24.0
+text = "Filter items:"
+
+[node name="FilterField" type="LineEdit" parent="Main/Tabs/Catapedia/HBox/Items/Filter"]
+margin_top = 28.0
+margin_right = 200.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="Info" type="VBoxContainer" parent="Main/Tabs/Catapedia/HBox"]
+margin_left = 206.0
+margin_right = 577.0
+margin_bottom = 456.0
+size_flags_horizontal = 3
+
+[node name="Tabs" type="TabContainer" parent="Main/Tabs/Catapedia/HBox/Info"]
+margin_right = 371.0
+margin_bottom = 456.0
+size_flags_vertical = 3
+custom_constants/top_margin = 0
+custom_constants/side_margin = 0
+tab_align = 0
+
+[node name="Item" type="RichTextLabel" parent="Main/Tabs/Catapedia/HBox/Info/Tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+bbcode_enabled = true
+
+[node name="Craft" type="RichTextLabel" parent="Main/Tabs/Catapedia/HBox/Info/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+bbcode_enabled = true
+
+[node name="Recipes" type="RichTextLabel" parent="Main/Tabs/Catapedia/HBox/Info/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+bbcode_enabled = true
+
+[node name="Disassembly" type="RichTextLabel" parent="Main/Tabs/Catapedia/HBox/Info/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+bbcode_enabled = true
+
+[node name="Construction" type="RichTextLabel" parent="Main/Tabs/Catapedia/HBox/Info/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 7.5
+margin_top = 33.5
+margin_right = -7.5
+margin_bottom = -7.5
+bbcode_enabled = true
+
 [node name="Debug" type="VBoxContainer" parent="Main/Tabs"]
 visible = false
 anchor_right = 1.0
@@ -1219,7 +1322,7 @@ size_flags_horizontal = 4
 text = "Print screen info"
 
 [node name="Log" type="RichTextLabel" parent="Main"]
-margin_top = 377.0
+margin_top = 605.0
 margin_right = 592.0
 margin_bottom = 692.0
 focus_mode = 2
@@ -1334,6 +1437,8 @@ __meta__ = {
 [connection signal="value_changed" from="Main/Tabs/Settings/NumPrs/sbNumPRs" to="Main/Tabs/Settings" method="_on_sbNumPRs_value_changed"]
 [connection signal="toggled" from="Main/Tabs/Settings/ScaleOverride/cbScaleOverrideEnable" to="Main/Tabs/Settings" method="_on_cbScaleOverrideEnable_toggled"]
 [connection signal="value_changed" from="Main/Tabs/Settings/ScaleOverride/sbScaleOverride" to="Main/Tabs/Settings" method="_on_sbScaleOverride_value_changed"]
+[connection signal="item_selected" from="Main/Tabs/Catapedia/HBox/Items/ItemList" to="Main/Tabs/Catapedia" method="_on_ItemList_item_selected"]
+[connection signal="text_changed" from="Main/Tabs/Catapedia/HBox/Items/Filter/FilterField" to="Main/Tabs/Catapedia" method="_on_FilterField_text_changed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button" to="Main/Tabs/Debug" method="_on_Button_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button2" to="Main/Tabs/Debug" method="_on_Button2_pressed"]
 [connection signal="pressed" from="Main/Tabs/Debug/Button3" to="Main/Tabs/Debug" method="_on_Button3_pressed"]
