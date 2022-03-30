@@ -65,3 +65,18 @@ func filter_strings(filter_str: String, strings: Array, case_sensitive := false)
 				result.push_back(strings[i])
 	
 	return result
+
+
+func itemize_array(arr: Array, separator := ", ", bullet = "") -> String:
+	# Creates a string listing the items of an array. Non-string array elements
+	# will be ignored.
+	
+	var result := ""
+	
+	for s in arr:
+		if typeof(s) != TYPE_STRING:
+			continue
+		result += bullet + s + separator
+	
+	result.trim_suffix(separator)
+	return result
