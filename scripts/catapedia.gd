@@ -7,7 +7,8 @@ var recipes: Dictionary
 var recipes_abstract: Dictionary
 var recipes_uncraft: Dictionary
 var craft_reqs: Dictionary
-
+var skill_names: Dictionary
+var tool_qualities: Dictionary
 
 func load_game_data() -> void:
 	
@@ -15,6 +16,8 @@ func load_game_data() -> void:
 	_load_requirements()
 	_load_items()
 	_load_recipes()
+	_load_skills()
+	_load_qualities() 
 
 
 func get_recipes_with_item(item_id: String) -> Array:
@@ -66,13 +69,21 @@ func _load_recipes() -> void:
 	recipes = {}
 	recipes_uncraft = {}
 	var counter := 0
-	var json_dir := Paths.game_dir.plus_file("data/json/recipes")
-	for file in FS.list_dir(json_dir, true):
+	var json_dirs := [
+		Paths.game_dir.plus_file("data/json/recipes"),
+		Paths.game_dir.plus_file("data/json/uncraft"),
+	]
+	var json_files := []
+	for dir in json_dirs:
+		for file in FS.list_dir(dir, true):
+			json_files.push_back(dir.plus_file(file))
+	
+	for file in json_files:
 		
 		if file.get_extension() != "json":
 			continue
 		
-		var parsed = Helpers.load_json_file(json_dir.plus_file(file))
+		var parsed = Helpers.load_json_file(file)
 		for recipe in parsed:
 			if "type" in recipe:
 				
@@ -84,12 +95,17 @@ func _load_recipes() -> void:
 						else:
 							recipes[id] = [recipe]
 						counter += 1
+						if ("reversible" in recipe) and (recipe["reversible"]):
+							recipes_uncraft[id] = recipe
 					elif "abstract" in recipe:
 						recipes_abstract[recipe["abstract"]] = recipe
 					
 				elif recipe["type"] == "uncraft":
-					recipes_uncraft[recipe["result"]] = recipe
-					counter += 1
+					if "result" in recipe:
+						recipes_uncraft[recipe["result"]] = recipe
+						counter += 1
+					elif "abstract" in recipe:
+						recipes_abstract[recipe["abstract"]] = recipe
 	
 	for id in recipes.keys():
 		for i in recipes[id].size():
@@ -111,6 +127,22 @@ func _load_requirements() -> void:
 		var parsed = Helpers.load_json_file(json_dir.plus_file(file))
 		for req in parsed:
 			craft_reqs[req["id"]] = req
+
+
+func _load_skills() -> void:
+	
+	skill_names = {}
+	var data = Helpers.load_json_file(Paths.game_dir.plus_file("data/json/skills.json"))
+	for skill in data:
+		skill_names[skill["id"]] = skill["name"]["str"]
+
+
+func _load_qualities() -> void:
+	
+	tool_qualities = {}
+	var data = Helpers.load_json_file(Paths.game_dir.plus_file("data/json/tool_qualities.json"))
+	for quality in data:
+		tool_qualities[quality["id"]] = quality["name"]["str"]
 
 
 func _process_item_info(item: Dictionary) -> Dictionary:

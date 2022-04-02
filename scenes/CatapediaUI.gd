@@ -49,7 +49,27 @@ func _on_ItemList_item_selected(index: int) -> void:
 func _populate_item_info(item_id: String) -> void:
 	
 	var item = Catapedia.items[item_id]
-	_item_view.bbcode_text = JSON.print(item, "  ")
+	var text := "[table=2]"
+	
+	if "weight" in item:
+		text += "[cell]Weight:[/cell][cell]%s[/cell]" % item["weight"]
+	if "volume" in item:
+		text += "[cell]Volume:[/cell][cell]%s[/cell]" % item["volume"]
+	if "material" in item:
+		var mats := []
+		for m in item["material"]:
+			mats.push_back(Catapedia.items[m]["name"])
+		text += "[cell]Materials:[/cell][cell]%s[/cell]" % Helpers.itemize_array(mats)
+	if "flags" in item:
+		text += "[cell]Flags:[/cell][cell]%s[/cell]" % Helpers.itemize_array(item["flags"])
+	if "qualities" in item:
+		var strings := []
+		for q in item["qualities"]:
+			strings.push_back(Catapedia.tool_qualities[q[0]] + " " + str(q[1]))
+		text += "[cell]Tool qualities:[/cell][cell]%s[/cell]" % Helpers.itemize_array(strings)
+	
+	text += "[/table]"
+	_item_view.bbcode_text = text + "\n\n" + JSON.print(item, "  ")
 
 
 func _populate_crafting_info(item_id: String) -> void:
@@ -71,12 +91,10 @@ func _populate_recipes_info(item_id: String) -> void:
 	for id in recipes:
 		recipe_names.push_back(Catapedia.items[id]["name"])
 	recipe_names.sort()
-	for i in recipe_names.size():
-		recipe_names[i] = "[url]%s[/url]" % recipe_names[i]
 	
 	if recipes.size() > 0:
 		_recipes_view.bbcode_text = "[b]%s[/b] is used in %s recipes:\n\n" % [name, recipes.size()] 
-		_recipes_view.bbcode_text += Helpers.itemize_array(recipe_names, "\n", " • ")
+		_recipes_view.bbcode_text += Helpers.itemize_array(recipe_names, "\n", " • [url]", "[/url]")
 	else:
 		_recipes_view.bbcode_text = "[b]%s[/b] is not used in any recipes." % name
 
