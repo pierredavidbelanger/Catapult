@@ -49,27 +49,58 @@ func _on_ItemList_item_selected(index: int) -> void:
 func _populate_item_info(item_id: String) -> void:
 	
 	var item = Catapedia.items[item_id]
-	var text := "[table=2]"
+	var text := "[u]General[/u][table=2]"
 	
 	if "weight" in item:
 		text += "[cell]Weight:[/cell][cell]%s[/cell]" % item["weight"]
+	
 	if "volume" in item:
 		text += "[cell]Volume:[/cell][cell]%s[/cell]" % item["volume"]
+	
 	if "material" in item:
 		var mats := []
 		for m in item["material"]:
 			mats.push_back(Catapedia.items[m]["name"])
 		text += "[cell]Materials:[/cell][cell]%s[/cell]" % Helpers.itemize_array(mats)
+	
 	if "flags" in item:
 		text += "[cell]Flags:[/cell][cell]%s[/cell]" % Helpers.itemize_array(item["flags"])
+	
 	if "qualities" in item:
 		var strings := []
 		for q in item["qualities"]:
 			strings.push_back(Catapedia.tool_qualities[q[0]] + " " + str(q[1]))
 		text += "[cell]Tool qualities:[/cell][cell]%s[/cell]" % Helpers.itemize_array(strings)
 	
-	text += "[/table]"
+	text += "[/table]\n"
+	
+	if "armor" in item:
+		text += _compose_armor_info(item["armor"][0])
+	
 	_item_view.bbcode_text = text + "\n\n" + JSON.print(item, "  ")
+
+
+func _compose_armor_info(armor: Dictionary) -> String:
+	
+	var s := "[u]Armor[/u][table=2]"
+	
+	if "encumbrance" in armor:
+		var enc_str: String
+		var enc = armor["encumbrance"]
+		if typeof(enc) == TYPE_REAL:
+			enc_str = str(enc)
+		elif typeof(enc) == TYPE_ARRAY:
+			enc_str = str(enc[0]) + " to " + str(enc[1])
+		s += "[cell]Encumbrance:[/cell][cell]%s[/cell]" % enc_str
+	
+	if "coverage" in armor:
+		s += "[cell]Coverage:[/cell][cell]%s[/cell]" % armor["coverage"]
+	
+	if "covers" in armor:
+		s += "[cell]Covers:[/cell][cell]%s[/cell]" % Helpers.itemize_array(armor["covers"])
+	
+	s += "[/table]"
+	return s
 
 
 func _populate_crafting_info(item_id: String) -> void:
